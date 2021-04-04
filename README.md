@@ -5,5 +5,5 @@
 ```docker build -t viwit-general .```
 ## Build the docker-compose
 ```docker-compose build```
-## Run the docker-compose
+## Recreate the container
 ```docker-compose up```
