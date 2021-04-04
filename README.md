@@ -1,9 +1,9 @@
 # General microservice
-# Enter the "General" directory to be able to build the image
+Enter the "General" directory to be able to build the image
 ```cd General```
-# Build the image
+Build the image
 ```docker build -t viwit-general .```
-# Build the docker-compose
+Build the docker-compose
 ```docker-compose build```
-# Run the docker-compose
+Run the docker-compose
 ```docker-compose up```
