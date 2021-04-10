@@ -15,7 +15,7 @@ services:
     ports:
       - "3000:80"     
     environment:
-      DB_CONNECTION_STRING: "host=postgres_image;port=5432;database=generalviwit;username=postgres;password="
+      DB_CONNECTION_STRING: "host=host.docker.internal;port=5432;database=generalviwit;username=postgres;password="
     networks:
       - generalapicontainer-dev  
   
