@@ -69,7 +69,7 @@ namespace General.Controllers
         }
 
         [HttpPut("{IdTrip}")]
-        public async Task<IActionResult> Updatebus(string IdTrip, Trip trip)
+        public async Task<ActionResult<Trip>> Updatebus(string IdTrip, Trip trip)
         {
             if (IdTrip != trip.IdTrip)
             {
@@ -101,7 +101,7 @@ namespace General.Controllers
                 return NotFound();
             }
 
-            return NoContent();
+            return trip_ToDTO(tripAux);
         }
 
         [HttpPost]
@@ -129,7 +129,7 @@ namespace General.Controllers
         }
 
         [HttpDelete("{IdTrip}")]
-        public async Task<IActionResult> Deletebus(string IdTrip)
+        public async Task<ActionResult<Trip>> Deletebus(string IdTrip)
         {
             var trip = await _context.Trips.FindAsync(IdTrip);
 
@@ -141,7 +141,7 @@ namespace General.Controllers
             _context.Trips.Remove(trip);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return trip_ToDTO(trip);
         }
 
         private bool tripExists(string IdTrip) =>

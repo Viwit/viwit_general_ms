@@ -47,7 +47,7 @@ namespace General.Controllers
         }
 
         [HttpPut("{licensePlateBus}")]
-        public async Task<IActionResult> Updatebus(string licensePlateBus, Bus Bus)
+        public async Task<ActionResult<Bus>> Updatebus(string licensePlateBus, Bus Bus)
         {
             if (licensePlateBus != Bus.LicensePlateBus)
             {
@@ -74,8 +74,8 @@ namespace General.Controllers
             {
                 return NotFound();
             }
-
-            return NoContent();
+            
+            return bus_ToDTO(bus);
         }
 
         [HttpPost]
@@ -99,7 +99,7 @@ namespace General.Controllers
         }
 
         [HttpDelete("{licensePlateBus}")]
-        public async Task<IActionResult> Deletebus(string licensePlateBus)
+        public async Task<ActionResult<Bus>> Deletebus(string licensePlateBus)
         {
             var bus = await _context.Buses.FindAsync(licensePlateBus);
 
@@ -111,7 +111,7 @@ namespace General.Controllers
             _context.Buses.Remove(bus);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return bus_ToDTO(bus);
         }
 
         private bool busExists(string licensePlateBus) =>

@@ -45,7 +45,7 @@ namespace General.Controllers
         }
 
         [HttpPut("{IdBusStop}")]
-        public async Task<IActionResult> UpdateBusStop(int IdBusStop, BusStop busStop)
+        public async Task<ActionResult<BusStop>> UpdateBusStop(int IdBusStop, BusStop busStop)
         {
             if (IdBusStop != busStop.IdBusStop)
             {
@@ -70,7 +70,7 @@ namespace General.Controllers
                 return NotFound();
             }
 
-            return NoContent();
+            return busStop_ToDTO(StopAux);
         }
 
         [HttpPost]
@@ -92,7 +92,7 @@ namespace General.Controllers
         }
 
         [HttpDelete("{IdBusStop}")]
-        public async Task<IActionResult> DeleteBusStop(int IdBusStop)
+        public async Task<ActionResult<BusStop>> DeleteBusStop(int IdBusStop)
         {
             var busStop = await _context.BusStops.FindAsync(IdBusStop);
 
@@ -104,7 +104,7 @@ namespace General.Controllers
             _context.BusStops.Remove(busStop);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return busStop_ToDTO(busStop);
         }
 
         private bool busStopExists(int IdBusStop) =>

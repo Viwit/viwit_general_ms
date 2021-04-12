@@ -47,7 +47,7 @@ namespace General.Controllers
         }
 
         [HttpPut("{DriversLicense}")]
-        public async Task<IActionResult> UpdateDriver(string DriversLicense, Driver driver)
+        public async Task<ActionResult<Driver>> UpdateDriver(string DriversLicense, Driver driver)
         {
             if (DriversLicense != driver.DriversLicense)
             {
@@ -75,7 +75,7 @@ namespace General.Controllers
                 return NotFound();
             }
 
-            return NoContent();
+            return driver_ToDTO(driverAux);
         }
 
         [HttpPost]
@@ -99,7 +99,7 @@ namespace General.Controllers
         }
 
         [HttpDelete("{DriversLicense}")]
-        public async Task<IActionResult> Deletebus(string DriversLicense)
+        public async Task<ActionResult<Driver>> Deletebus(string DriversLicense)
         {
             var driver = await _context.Drivers.FindAsync(DriversLicense);
 
@@ -111,7 +111,7 @@ namespace General.Controllers
             _context.Drivers.Remove(driver);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return driver_ToDTO(driver);
         }
 
         private bool driverExists(string DriversLicense) =>

@@ -48,7 +48,7 @@ namespace General.Controllers
         }
 
         [HttpPut("{IdRoute}")]
-        public async Task<IActionResult> UpdateRoute(int IdRoute, Route route)
+        public async Task<ActionResult<Route>> UpdateRoute(int IdRoute, Route route)
         {
             if (IdRoute != route.IdRoute)
             {
@@ -76,7 +76,7 @@ namespace General.Controllers
                 return NotFound();
             }
 
-            return NoContent();
+            return route_ToDTO(routeAux);
         }
 
         [HttpPost]
@@ -101,7 +101,7 @@ namespace General.Controllers
         }
 
         [HttpDelete("{IdRoute}")]
-        public async Task<IActionResult> DeleteRoute(int IdRoute)
+        public async Task<ActionResult<Route>> DeleteRoute(int IdRoute)
         {
             var route = await _context.Routes.FindAsync(IdRoute);
 
@@ -113,7 +113,7 @@ namespace General.Controllers
             _context.Routes.Remove(route);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return route_ToDTO(route);
         }
 
         private bool routeExists(int IdRoute) =>

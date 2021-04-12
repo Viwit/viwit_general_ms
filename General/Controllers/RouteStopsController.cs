@@ -45,7 +45,7 @@ namespace General.Controllers
         }
 
         [HttpPut("{IdRoute_Route}")]
-        public async Task<IActionResult> UpdateRouteStops(int IdRoute_Route, RouteStops routeStops)
+        public async Task<ActionResult<RouteStops>> UpdateRouteStops(int IdRoute_Route, RouteStops routeStops)
         {
             if (IdRoute_Route != routeStops.IdRoute_Route)
             {
@@ -70,7 +70,7 @@ namespace General.Controllers
                 return NotFound();
             }
 
-            return NoContent();
+            return routeStops_ToDTO(routeStopsAux);
         }
 
         [HttpPost]
@@ -92,7 +92,7 @@ namespace General.Controllers
         }
 
         [HttpDelete("Route/{IdRoute_Route}/BusStop/{IdBusStop_BusStop}")]
-        public async Task<IActionResult> DeleteRouteStopsAccordingToIdRouteAndIdStop(int IdRoute_Route, int IdBusStop_BusStop)
+        public async Task<ActionResult<RouteStops>> DeleteRouteStopsAccordingToIdRouteAndIdStop(int IdRoute_Route, int IdBusStop_BusStop)
         {
             var routeStops = await _context.RouteStops_s.FindAsync(IdBusStop_BusStop, IdRoute_Route);
 
@@ -104,7 +104,7 @@ namespace General.Controllers
             _context.RouteStops_s.Remove(routeStops);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return routeStops_ToDTO(routeStops);
         }
 
         private bool routesStopsExists(int IdRoute_Route) =>
