@@ -24,17 +24,43 @@ namespace General.Controllers
         [HttpGet]
         public object GetRouteStops()
         {
-            return _context.RouteStops_s.Where(b => b.IdRoute_Route >= 0).Select((c) => new
+            return _context.RouteStops_s.Where(b => b.Route_IdRoute >= 0).Select((c) => new
             {
-                IdRoute_Route = c.IdRoute_Route,
-                IdBusStop_BusStop = c.IdBusStop_BusStop
+                Route_IdRoute = c.Route_IdRoute,
+                BusStop_IdBusStop = c.BusStop_IdBusStop,
+                positionRouteStops = c.positionRouteStops
             }).ToList();
         }
 
-        [HttpGet("Route/{IdRoute_Route}/BusStop/{IdBusStop_BusStop}")]
-        public async Task<ActionResult<RouteStops>> GetRouteStopsAccoidingToIdRouteAndIdStop(int IdRoute_Route, int IdBusStop_BusStop)
+        [HttpGet("RouteId/{Route_IdRoute}")]
+        public object GetBusStopsByIdRoute(int Route_IdRoute)
         {
-            var routeStops = await _context.RouteStops_s.FindAsync(IdRoute_Route, IdBusStop_BusStop);
+            var res = _context.RouteStops_s.Join(_context.Routes,
+                          a => a.Route_IdRoute,
+                          b => b.IdRoute,
+                          (a, b) => new { A = a, B = b }).Where(c => c.A.Route_IdRoute == c.B.IdRoute && c.A.Route_IdRoute == Route_IdRoute)
+                          .Join(_context.BusStops,
+                          ab => ab.A.BusStop_IdBusStop,
+                          c => c.IdBusStop,
+                          (ab, c) => new
+                          {
+                              routeStops = ab.A,
+                              route = ab.B,
+                              busStop = c
+                          }).Where(d => d.routeStops.BusStop_IdBusStop == d.busStop.IdBusStop)
+                                        .Select((e) => new
+                                        {
+                                            positionRouteStops = e.routeStops.positionRouteStops,
+                                            nameOrAddressBusStop = e.busStop.NameOrAddressBusStop
+                                        });
+
+            return res;
+        }
+
+        [HttpGet("Route/{Route_IdRoute}/BusStop/{BusStop_IdBusStop}/positionRouteStops/{positionRouteStops}")]
+        public async Task<ActionResult<RouteStops>> GetRouteStopsAccoidingToIdRouteAndIdStopPosition(int Route_IdRoute, int BusStop_IdBusStop, int positionRouteStops)
+        {
+            var routeStops = await _context.RouteStops_s.FindAsync(Route_IdRoute, BusStop_IdBusStop, positionRouteStops);
 
             if (routeStops == null)
             {
@@ -44,57 +70,45 @@ namespace General.Controllers
             return routeStops_ToDTO(routeStops);
         }
 
-        [HttpPut("{IdRoute_Route}")]
-        public async Task<ActionResult<RouteStops>> UpdateRouteStops(int IdRoute_Route, RouteStops routeStops)
+        [HttpGet("Route/{Route_IdRoute}/BusStop/{BusStop_IdBusStop}")]
+        public async Task<ActionResult<object>> GetRouteStopsAccoidingToIdRouteAndIdStop(int Route_IdRoute, int BusStop_IdBusStop)
         {
-            if (IdRoute_Route != routeStops.IdRoute_Route)
+            return _context.RouteStops_s.Where(b => b.Route_IdRoute == Route_IdRoute && b.BusStop_IdBusStop == BusStop_IdBusStop).Select((c) => new
             {
-                return BadRequest();
-            }
+                Route_IdRoute = c.Route_IdRoute,
+                BusStop_IdBusStop = c.BusStop_IdBusStop,
+                positionRouteStops = c.positionRouteStops
+            }).ToList();
 
-            var routeStopsAux = await _context.RouteStops_s.FindAsync(IdRoute_Route);
-            if (routeStopsAux == null)
-            {
-                return NotFound();
-            }
-
-            routeStopsAux.IdRoute_Route = routeStops.IdRoute_Route;
-            routeStopsAux.IdBusStop_BusStop = routeStops.IdBusStop_BusStop;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception) when (!routesStopsExists(IdRoute_Route))
-            {
-                return NotFound();
-            }
-
-            return routeStops_ToDTO(routeStopsAux);
         }
 
         [HttpPost]
-        public async Task<ActionResult<RouteStops>> CreateRouteStops(RouteStops routeStops)
+        public async Task<ActionResult<Message>> CreateRouteStops(RouteStops routeStops)
         {
             var routeStopsAux = new RouteStops
             {
-                IdRoute_Route = routeStops.IdRoute_Route,
-                IdBusStop_BusStop = routeStops.IdBusStop_BusStop
+                Route_IdRoute = routeStops.Route_IdRoute,
+                BusStop_IdBusStop = routeStops.BusStop_IdBusStop,
+                positionRouteStops = routeStops.positionRouteStops
             };
 
             _context.RouteStops_s.Add(routeStopsAux);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(
-                nameof(GetRouteStops),
-                new { IdRoute_Route = routeStops.IdRoute_Route },
-                routeStops_ToDTO(routeStops));
+            var message = new Message("Route Stop successfully added");
+
+            return message;
         }
 
-        [HttpDelete("Route/{IdRoute_Route}/BusStop/{IdBusStop_BusStop}")]
-        public async Task<ActionResult<RouteStops>> DeleteRouteStopsAccordingToIdRouteAndIdStop(int IdRoute_Route, int IdBusStop_BusStop)
+        [HttpDelete("Route/{Route_IdRoute}/BusStop/{BusStop_IdBusStop}/positionRouteStops/{positionRouteStops}")]
+        public async Task<ActionResult<RouteStops>> DeleteRouteStopsAccordingToIdRouteAndIdStopAndPosition(int route_IdRoute, int busStop_IdBusStop, int PositionRouteStops)
         {
-            var routeStops = await _context.RouteStops_s.FindAsync(IdBusStop_BusStop, IdRoute_Route);
+            RouteStops routeStops = new RouteStops
+            {
+                Route_IdRoute = route_IdRoute,
+                BusStop_IdBusStop = busStop_IdBusStop,
+                positionRouteStops = PositionRouteStops
+            };
 
             if (routeStops == null)
             {
@@ -107,14 +121,15 @@ namespace General.Controllers
             return routeStops_ToDTO(routeStops);
         }
 
-        private bool routesStopsExists(int IdRoute_Route) =>
-             _context.RouteStops_s.Any(e => e.IdRoute_Route == IdRoute_Route);
+        private bool routesStopsExists(int Route_IdRoute) =>
+             _context.RouteStops_s.Any(e => e.Route_IdRoute == Route_IdRoute);
 
         private static RouteStops routeStops_ToDTO(RouteStops routeStops) =>
             new RouteStops
             {
-                IdRoute_Route = routeStops.IdRoute_Route,
-                IdBusStop_BusStop = routeStops.IdBusStop_BusStop
+                Route_IdRoute = routeStops.Route_IdRoute,
+                BusStop_IdBusStop = routeStops.BusStop_IdBusStop,
+                positionRouteStops = routeStops.positionRouteStops
             };
     }
 }

@@ -16,6 +16,7 @@ namespace General.Maps
             entityBuilder.Property(x => x.Name).HasColumnName("Name");
             entityBuilder.Property(x => x.DriverExperience).HasColumnName("DriverExperience");
             entityBuilder.Property(x => x.AverageDriverRating).HasColumnName("AverageDriverRating");
+            entityBuilder.Property(x => x.userIdDriver).HasColumnName("userIdDriver");
         }
     }
 }

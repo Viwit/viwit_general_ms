@@ -9,11 +9,12 @@ namespace General.Maps
     {
         public RouteStopsMap(EntityTypeBuilder<RouteStops> entityBuilder)
         {
-            entityBuilder.HasKey(x => new { x.IdRoute_Route, x.IdBusStop_BusStop });
+            entityBuilder.HasKey(x => new { x.Route_IdRoute, x.BusStop_IdBusStop, x.positionRouteStops });
             entityBuilder.ToTable("RouteStops");
 
-            entityBuilder.Property(x => x.IdRoute_Route).HasColumnName("IdRoute_Route");
-            entityBuilder.Property(x => x.IdBusStop_BusStop).HasColumnName("IdBusStop_BusStop");
+            entityBuilder.Property(x => x.Route_IdRoute).HasColumnName("Route_IdRoute");
+            entityBuilder.Property(x => x.BusStop_IdBusStop).HasColumnName("BusStop_IdBusStop");
+            entityBuilder.Property(x => x.positionRouteStops).HasColumnName("positionRouteStops");
         }
     }
 }

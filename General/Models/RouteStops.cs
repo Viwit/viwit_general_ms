@@ -10,9 +10,11 @@ namespace General.Models
         {
         }
 
-        public int IdRoute_Route { get; set; }
+        public int Route_IdRoute { get; set; }
 
-        public int IdBusStop_BusStop { get; set; }
+        public int BusStop_IdBusStop { get; set; }
+
+        public int positionRouteStops { get; set; }
         
     }
 }

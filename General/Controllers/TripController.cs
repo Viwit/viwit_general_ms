@@ -24,39 +24,41 @@ namespace General.Controllers
         [HttpGet]
         public object GetTrip()
         {
-            return _context.Trips.Where(b => b.IdTrip.Contains("")).Select((c) => new
+            return _context.Trips.Where(b => 1 > 0).Select((c) => new
             {
                 IdTrip = c.IdTrip,
-                IdRoute_Route = c.IdRoute_Route,
-                LicensePlateBus_Bus = c.LicensePlateBus_Bus,
-                DriversLicense_Driver = c.DriversLicense_Driver,
-                IdBusStop_BusStop = c.IdBusStop_BusStop,
+                Route_IdRoute = c.Route_IdRoute,
+                Bus_LicensePlateBus = c.Bus_LicensePlateBus,
+                Driver_DriversLicense = c.Driver_DriversLicense,
+                BusStop_IdBusStop = c.BusStop_IdBusStop,
                 CurrentTripOccupation = c.CurrentTripOccupation,
                 StartDate = c.StartDate,
-                TripStatus = c.TripStatus
+                TripStatus = c.TripStatus,
+                TotalPassengersTrip = c.TotalPassengersTrip
             }).ToList();
         }
 
-        [HttpGet("Route/{IdRoute_Route}/LicensePlateBus/{LicensePlateBus_Bus}/DriversLicense/{DriversLicense_Driver}")]
-        public object GetTripAccordingToRouteBusDriver(int IdRoute_Route, string LicensePlateBus_Bus, string DriversLicense_Driver)
+        [HttpGet("Route/{Route_IdRoute}/LicensePlateBus/{Bus_LicensePlateBus}/DriversLicense/{Driver_DriversLicense}")]
+        public object GetTripAccordingToRouteBusDriver(int Route_IdRoute, string Bus_LicensePlateBus, string Driver_DriversLicense)
         {
-            return _context.Trips.Where(b => b.IdRoute_Route.Equals(IdRoute_Route) 
-            & b.LicensePlateBus_Bus.Equals(LicensePlateBus_Bus) 
-            & b.DriversLicense_Driver.Equals(DriversLicense_Driver)).Select((c) => new
+            return _context.Trips.Where(b => b.Route_IdRoute.Equals(Route_IdRoute) 
+            & b.Bus_LicensePlateBus.Equals(Bus_LicensePlateBus) 
+            & b.Driver_DriversLicense.Equals(Driver_DriversLicense)).Select((c) => new
             {
                 IdTrip = c.IdTrip,
-                IdRoute_Route = c.IdRoute_Route,
-                LicensePlateBus_Bus = c.LicensePlateBus_Bus,
-                DriversLicense_Driver = c.DriversLicense_Driver,
-                IdBusStop_BusStop = c.IdBusStop_BusStop,
+                Route_IdRoute = c.Route_IdRoute,
+                BusStop_IdBusStop = c.BusStop_IdBusStop,
+                Driver_DriversLicense = c.Driver_DriversLicense,
+                Bus_LicensePlateBus = c.Bus_LicensePlateBus,
                 CurrentTripOccupation = c.CurrentTripOccupation,
                 StartDate = c.StartDate,
-                TripStatus = c.TripStatus
+                TripStatus = c.TripStatus,
+                TotalPassengersTrip = c.TotalPassengersTrip
             }).ToList();
         }
 
         [HttpGet("{IdTrip}")]
-        public async Task<ActionResult<Trip>> GetTrip(string IdTrip)
+        public async Task<ActionResult<Trip>> GetTrip(int IdTrip)
         {
             var trip = await _context.Trips.FindAsync(IdTrip);
 
@@ -69,7 +71,7 @@ namespace General.Controllers
         }
 
         [HttpPut("{IdTrip}")]
-        public async Task<ActionResult<Trip>> Updatebus(string IdTrip, Trip trip)
+        public async Task<ActionResult<Trip>> Updatebus(int IdTrip, Trip trip)
         {
             if (IdTrip != trip.IdTrip)
             {
@@ -84,13 +86,14 @@ namespace General.Controllers
 
             
                 tripAux.IdTrip = trip.IdTrip;
-                tripAux.IdRoute_Route = trip.IdRoute_Route;
-                tripAux.LicensePlateBus_Bus = trip.LicensePlateBus_Bus;
-                tripAux.DriversLicense_Driver = trip.DriversLicense_Driver;
-                tripAux.IdBusStop_BusStop = trip.IdBusStop_BusStop;
+                tripAux.Route_IdRoute = trip.Route_IdRoute;
+                tripAux.BusStop_IdBusStop = trip.BusStop_IdBusStop;
+                tripAux.Driver_DriversLicense = trip.Driver_DriversLicense;
+                tripAux.Bus_LicensePlateBus = trip.Bus_LicensePlateBus;
                 tripAux.CurrentTripOccupation = trip.CurrentTripOccupation;
                 tripAux.StartDate = trip.StartDate;
                 tripAux.TripStatus = trip.TripStatus;
+                tripAux.TotalPassengersTrip = trip.TotalPassengersTrip;
 
             try
             {
@@ -105,31 +108,30 @@ namespace General.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Trip>> Createbus(Trip trip)
+        public async Task<ActionResult<Message>> Createbus(Trip trip)
         {
             var tripAux = new Trip
             {
-                IdTrip = trip.IdTrip,
-                IdRoute_Route = trip.IdRoute_Route,
-                LicensePlateBus_Bus = trip.LicensePlateBus_Bus,
-                DriversLicense_Driver = trip.DriversLicense_Driver,
-                IdBusStop_BusStop = trip.IdBusStop_BusStop,
+                Route_IdRoute = trip.Route_IdRoute,
+                BusStop_IdBusStop = trip.BusStop_IdBusStop,
+                Driver_DriversLicense = trip.Driver_DriversLicense,
+                Bus_LicensePlateBus = trip.Bus_LicensePlateBus,
                 CurrentTripOccupation = trip.CurrentTripOccupation,
                 StartDate = trip.StartDate,
-                TripStatus = trip.TripStatus
+                TripStatus = trip.TripStatus,
+                TotalPassengersTrip = trip.TotalPassengersTrip
             };
 
             _context.Trips.Add(tripAux);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(
-                nameof(GetTrip),
-                new { IdTrip = trip.IdTrip },
-                trip_ToDTO(trip));
+            var message = new Message("Trip successfully added");
+
+            return message;
         }
 
         [HttpDelete("{IdTrip}")]
-        public async Task<ActionResult<Trip>> Deletebus(string IdTrip)
+        public async Task<ActionResult<Trip>> Deletebus(int IdTrip)
         {
             var trip = await _context.Trips.FindAsync(IdTrip);
 
@@ -144,20 +146,21 @@ namespace General.Controllers
             return trip_ToDTO(trip);
         }
 
-        private bool tripExists(string IdTrip) =>
+        private bool tripExists(int IdTrip) =>
              _context.Trips.Any(e => e.IdTrip == IdTrip);
 
         private static Trip trip_ToDTO(Trip trip) =>
             new Trip
             {
                 IdTrip = trip.IdTrip,
-                IdRoute_Route = trip.IdRoute_Route,
-                LicensePlateBus_Bus = trip.LicensePlateBus_Bus,
-                DriversLicense_Driver = trip.DriversLicense_Driver,
-                IdBusStop_BusStop = trip.IdBusStop_BusStop,
+                Route_IdRoute = trip.Route_IdRoute,
+                BusStop_IdBusStop = trip.BusStop_IdBusStop,
+                Driver_DriversLicense = trip.Driver_DriversLicense,
+                Bus_LicensePlateBus = trip.Bus_LicensePlateBus,
                 CurrentTripOccupation = trip.CurrentTripOccupation,
                 StartDate = trip.StartDate,
-                TripStatus = trip.TripStatus
+                TripStatus = trip.TripStatus,
+                TotalPassengersTrip = trip.TotalPassengersTrip
             };
     }
 }

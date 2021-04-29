@@ -80,11 +80,10 @@ namespace General.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Route>> CreateRoute(Route route)
+        public async Task<ActionResult<Message>> CreateRoute(Route route)
         {
             var routeAux = new Route
             {
-                IdRoute = route.IdRoute,
                 NameRoute = route.NameRoute,
                 InitialBusStop = route.InitialBusStop,
                 FinalBusStop = route.FinalBusStop,
@@ -94,10 +93,9 @@ namespace General.Controllers
             _context.Routes.Add(routeAux);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(
-                nameof(GetRoute),
-                new { IdRoute = route.IdRoute },
-                route_ToDTO(route));
+            var message = new Message("Route successfully added");
+
+            return message;
         }
 
         [HttpDelete("{IdRoute}")]

@@ -74,21 +74,19 @@ namespace General.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BusStop>> CreateBusStop(BusStop busStop)
+        public async Task<ActionResult<Message>> CreateBusStop(BusStop busStop)
         {
             var busStopAux = new BusStop
             {
-                IdBusStop = busStop.IdBusStop,
                 NameOrAddressBusStop = busStop.NameOrAddressBusStop
             };
 
             _context.BusStops.Add(busStopAux);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(
-                nameof(GetBusStop),
-                new { IdBusStop = busStop.IdBusStop },
-                busStop_ToDTO(busStop));
+            var message = new Message("Bus Stop successfully added");
+
+            return message;
         }
 
         [HttpDelete("{IdBusStop}")]
