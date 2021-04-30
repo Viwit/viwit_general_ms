@@ -29,7 +29,8 @@ namespace General.Controllers
                 LicensePlateBus = c.LicensePlateBus,
                 Model = c.Model,
                 SeatedPassengerCapacity = c.SeatedPassengerCapacity,
-                StandingPassengerCapacity = c.StandingPassengerCapacity
+                StandingPassengerCapacity = c.StandingPassengerCapacity,
+                debtCollectorIdUser = c.debtCollectorIdUser
             }).ToList();
         }
 
@@ -65,6 +66,7 @@ namespace General.Controllers
             bus.Model = Bus.Model;
             bus.SeatedPassengerCapacity = Bus.SeatedPassengerCapacity;
             bus.StandingPassengerCapacity = Bus.StandingPassengerCapacity;
+            bus.debtCollectorIdUser = Bus.debtCollectorIdUser;
 
             try
             {
@@ -86,7 +88,8 @@ namespace General.Controllers
                 LicensePlateBus = bus.LicensePlateBus,
                 Model = bus.Model,
                 SeatedPassengerCapacity = bus.SeatedPassengerCapacity,
-                StandingPassengerCapacity = bus.StandingPassengerCapacity
+                StandingPassengerCapacity = bus.StandingPassengerCapacity,
+                debtCollectorIdUser = bus.debtCollectorIdUser
             };
 
             _context.Buses.Add(busAux);
@@ -123,7 +126,8 @@ namespace General.Controllers
                 LicensePlateBus = bus.LicensePlateBus,
                 Model = bus.Model,
                 SeatedPassengerCapacity = bus.SeatedPassengerCapacity,
-                StandingPassengerCapacity = bus.StandingPassengerCapacity
+                StandingPassengerCapacity = bus.StandingPassengerCapacity,
+                debtCollectorIdUser = bus.debtCollectorIdUser
             };
     }
 }

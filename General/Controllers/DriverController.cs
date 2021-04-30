@@ -29,8 +29,7 @@ namespace General.Controllers
                 DriversLicense = c.DriversLicense,
                 Name = c.Name,
                 DriverExperience = c.DriverExperience,
-                AverageDriverRating = c.AverageDriverRating,
-                userIdDriver = c.userIdDriver
+                AverageDriverRating = c.AverageDriverRating
             }).ToList();
         }
 
@@ -66,7 +65,6 @@ namespace General.Controllers
             driverAux.Name = driver.Name;
             driverAux.DriverExperience = driver.DriverExperience;
             driverAux.AverageDriverRating = driver.AverageDriverRating;
-            driverAux.userIdDriver = driver.userIdDriver;
 
             try
             {
@@ -88,8 +86,7 @@ namespace General.Controllers
                 DriversLicense = driver.DriversLicense,
                 Name = driver.Name,
                 DriverExperience = driver.DriverExperience,
-                AverageDriverRating = driver.AverageDriverRating,
-                userIdDriver = driver.userIdDriver
+                AverageDriverRating = driver.AverageDriverRating
             };
 
             _context.Drivers.Add(driverAux);
@@ -126,8 +123,7 @@ namespace General.Controllers
                 DriversLicense = driver.DriversLicense,
                 Name = driver.Name,
                 DriverExperience = driver.DriverExperience,
-                AverageDriverRating = driver.AverageDriverRating,
-                userIdDriver = driver.userIdDriver
+                AverageDriverRating = driver.AverageDriverRating
             };
     }
 }

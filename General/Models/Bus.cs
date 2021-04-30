@@ -18,5 +18,7 @@ namespace General.Models
 
         public int StandingPassengerCapacity { get; set; }
 
+        public int debtCollectorIdUser{ get; set; }
+
     }
 }

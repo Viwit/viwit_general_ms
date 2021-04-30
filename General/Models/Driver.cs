@@ -17,7 +17,5 @@ namespace General.Models
         public int DriverExperience { get; set; }
 
         public string AverageDriverRating { get; set; }
-
-        public int userIdDriver { get; set; }
     }
 }

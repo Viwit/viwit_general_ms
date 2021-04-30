@@ -16,6 +16,7 @@ namespace General.Maps
             entityBuilder.Property(x => x.Model).HasColumnName("Model");
             entityBuilder.Property(x => x.SeatedPassengerCapacity).HasColumnName("SeatedPassengerCapacity");
             entityBuilder.Property(x => x.StandingPassengerCapacity).HasColumnName("StandingPassengerCapacity");
+            entityBuilder.Property(x => x.debtCollectorIdUser).HasColumnName("debtCollectorIdUser");
         }
     }
 }
